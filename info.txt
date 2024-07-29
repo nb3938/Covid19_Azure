@@ -1,0 +1,6 @@
+selected resource name:		pl_execute_population_pipeline
+selected resource type:		pipeline
+factory name:			covid-reporting-3848-adf
+factory location:		eastus
+subscription id:		84b50927-55a1-40ca-bde4-e11a05ee7472
+time of download (UTC):		Tue, 13 Jun 2023 01:41:19 GMT

@@ -1,0 +1,38 @@
+- For every drag and drop activity in ADF its represented as JSON file, building the ADF we get ARM Template(Azure Resource Manager) - contains the project configs and used for depolyment pipelines and triggers in other environment
+
+CI/CD in ADF
+Option 1 : ADF Publish
+- Manual Build using ADF publish and automated delivery using release pipelines
+
+Live Mode:
+- Working with only 1 developer
+- Created Pipelines, dataflows, datasets, linked services, triggers
+- Debugged the pipeline for testing 
+- Validated the objects for errors
+- Published, which stored the object to ADF-Repository
+- Directly connected ADF studio to ADF repo since only 1 developer was working
+
+Dis-advantages:
+- No source control for more than 1 developer and may work on the same pipeline and overwrite each others changes
+- No version control for rolling back
+- No reviews option
+
+Git Mode: (Github or Azure Devops Repos)
+- Configure ADF with GIT for version and source control
+- Developers can create seperate branches and work on it
+- When changes confirmed and reviewed it will be merged to the main branch
+- Then it will be published to ADF- Dev repo and also create adf_publish branch with ARM templates for deployment in other environments
+- We will have 3 ADF - dev, test and prod
+	- Once the development is completed in dev ADF and main branch is published we get the required ARM templates in dev ADF
+	- These will then be used in the release pipeline to deploy in test environment(test ADF)
+	- The deployment in test ADF is done using ARM Deployment Job which needs the ARM templates and configs of the Test ADF
+		- Issues with ARM deployement
+			- doesnt take nto consideration the deleted components
+			- if we update a trigger we first need to stop it to take affect
+		- For this we need to use the pre deployement script which will stop the trigger and then start it after deployment and take care of the deleted objects
+	- All these changes are kept in a test stage and then prod stage is created in the release pipeline that needs approval
+	- once the testing is done it will be sent for approval to deploy in production environment
+- ARM can be used for deployment in Test and Production
+- overall we will have a release pipeline which will use the ARM template as the source artificat and create 2 stages for test and prod and each of them will have 3 jobs - > Pre deployment scrip - ARM deployment - post deployment script
+
+Option 2 : Fully Automated
